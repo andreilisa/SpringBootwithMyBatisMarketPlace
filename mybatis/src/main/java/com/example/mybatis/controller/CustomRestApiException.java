@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.constraints.NotNull;
 
 
 @ControllerAdvice
@@ -22,22 +23,23 @@ public class CustomRestApiException extends ResponseEntityExceptionHandler {
     public final ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
         ApiError exceptionResponse = new ApiError(ex.getMessage(),
                 request.getDescription(false));
-        return new ResponseEntity(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(ProductNotFoundException.class)
     public final ResponseEntity<Object> handleUserNotFoundException(ProductNotFoundException ex, WebRequest request) {
         ApiError exceptionResponse = new ApiError(ex.getMessage(),
                 request.getDescription(false));
-        return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 
     @Override
+
     protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers,
                                                         HttpStatus status, WebRequest request) {
         ApiError exceptionResponse = new ApiError("ARGUMENTS NOT VALID",
                 ex.getRequiredType().toString() + " type Required");
-        return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -45,7 +47,7 @@ public class CustomRestApiException extends ResponseEntityExceptionHandler {
                                                                   HttpHeaders headers, HttpStatus status, WebRequest request){
         ApiError exceptionResponse = new ApiError("CONFLICT",
                 ex.getBindingResult().toString());
-        return new ResponseEntity(exceptionResponse, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.CONFLICT);
     }
 }
 

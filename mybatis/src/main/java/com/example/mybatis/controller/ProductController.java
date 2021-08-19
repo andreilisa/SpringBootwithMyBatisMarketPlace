@@ -11,14 +11,13 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
+
 
 @Api
 @RestController
@@ -26,11 +25,11 @@ import java.util.List;
 @Validated
 public class ProductController {
     @Autowired
+    LikeService likeService;
+    @Autowired
     private ProductMapper productMapper;
     @Autowired
     private UserMapper userMapper;
-        @Autowired
-        LikeService likeService;
 
     public User getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -43,7 +42,7 @@ public class ProductController {
             authorizations = {
                     @Authorization(value = "Bearer")})
     @PostMapping("/create-product")
-    public Products create( @Valid @RequestBody ProductRequest productRequest) {
+    public Products create(@Valid @RequestBody ProductRequest productRequest) {
         Products products = new Products();
         products.setName(productRequest.getName());
         products.setPrice(productRequest.getPrice());
@@ -90,10 +89,11 @@ public class ProductController {
     @GetMapping("/product-by-id")
     public Products product(@RequestParam Long id) {
         Products products = productMapper.findById(id);
-        if (getCurrentUserId().getId().equals(products.getUserId()))
+        if (!getCurrentUserId().getId().equals(products.getUserId()))
             productMapper.show(id);
         return products;
     }
+
     @ApiOperation(
             value = "Like Product",
             authorizations = {
@@ -103,13 +103,14 @@ public class ProductController {
 
         return likeService.likeProducts(id);
     }
+
     @ApiOperation(
-            value = "DisLike Product",
+            value = "Dislike Product",
             authorizations = {
                     @Authorization(value = "Bearer")})
     @RequestMapping(value = "/dislike", method = RequestMethod.PATCH)
 
-    public String dislikeProduct(@RequestParam Long id)  {
+    public String dislikeProduct(@RequestParam Long id) {
 
         return likeService.dislikeProduct(id);
     }

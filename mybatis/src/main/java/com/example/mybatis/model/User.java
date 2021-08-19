@@ -23,7 +23,6 @@ public class User implements UserDetails {
     private boolean locked ;
     private boolean enabled = true;
     private List<Products> products;
-    private List<Like> likes;
 
         public User(String username,
                 String password,

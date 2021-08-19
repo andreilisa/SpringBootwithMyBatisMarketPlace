@@ -1,8 +1,8 @@
 package com.example.mybatis.mapper;
 
 import com.example.mybatis.model.Products;
+import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.*;
-
 import java.util.List;
 
 @Mapper
@@ -10,8 +10,8 @@ public interface ProductMapper {
     @Select("select id,name,price,user_id as userId from products")
     List<Products> findAll(int pageable);
 
-    @Insert("insert into products(name,price, user_id) values(#{name}, #{price},#{userId})" )
-    @Options(useGeneratedKeys=true, keyProperty="id")
+    @Insert("insert into products(name,price, user_id) values(#{name}, #{price},#{userId})")
+    @Options(useGeneratedKeys = true, keyProperty = "id")
     void save(Products products);
 
     @Select("select id,name,price,user_id as userId from products where id = #{id}")
@@ -25,4 +25,9 @@ public interface ProductMapper {
 
     @Select("select name, price from products where id =#{id}")
     void show(Long products);
+
+    @Select("select id,name,price,user_id as userId from products")
+    Page<Products> findByPage();
+
+
 }
