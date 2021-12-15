@@ -1,5 +1,6 @@
 package com.example.mybatis.controller;
 
+import com.example.mybatis.mapper.ElasticMapper;
 import com.example.mybatis.mapper.ProductMapper;
 import com.example.mybatis.mapper.UserMapper;
 import com.example.mybatis.model.ProductRequest;
@@ -31,6 +32,9 @@ public class ProductController {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private ElasticMapper elasticMapper;
+
     public User getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return userMapper.findByUsername(authentication.getName());
@@ -48,6 +52,7 @@ public class ProductController {
         products.setPrice(productRequest.getPrice());
         products.setUserId(getCurrentUserId().getId());
         productMapper.save(products);
+        elasticMapper.save(products);
         return products;
     }
 
@@ -63,13 +68,14 @@ public class ProductController {
             products.setName(products1.getName());
             products.setPrice(products1.getPrice());
             productMapper.update(products);
+            elasticMapper.save(products);
             return HttpStatus.OK + " \n Product Update with success";
         } else throw new Exception(HttpStatus.NOT_FOUND + " No value present");
     }
 
 
     @ApiOperation(
-            value = "Delete product by id ",
+            value = "delete product by id ",
             authorizations = {
                     @Authorization(value = "Bearer")})
     @DeleteMapping("/delete/{id}")
@@ -83,7 +89,7 @@ public class ProductController {
     }
 
     @ApiOperation(
-            value = "Show product by id",
+            value = "show product by id",
             authorizations = {
                     @Authorization(value = "Bearer")})
     @GetMapping("/product-by-id")
@@ -95,7 +101,7 @@ public class ProductController {
     }
 
     @ApiOperation(
-            value = "Like Product",
+            value = "like product",
             authorizations = {
                     @Authorization(value = "Bearer")})
     @RequestMapping(value = "/like", method = RequestMethod.PATCH)
@@ -105,7 +111,7 @@ public class ProductController {
     }
 
     @ApiOperation(
-            value = "Dislike Product",
+            value = "dislike product",
             authorizations = {
                     @Authorization(value = "Bearer")})
     @RequestMapping(value = "/dislike", method = RequestMethod.PATCH)
