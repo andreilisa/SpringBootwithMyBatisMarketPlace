@@ -39,7 +39,7 @@ public class LikeService {
         if (product != null) {
 
             if (product.getUserId().equals(user.getId())) {
-                return HttpStatus.OK + " \n  not possible to like your own product!";
+                return HttpStatus.BAD_REQUEST + " \n  not possible to like your own product!";
             }
 
             Like like = likeMapper.findByUserIdAndProdId(user.getId(), product.getId());
@@ -69,7 +69,7 @@ public class LikeService {
         if (product != null) {
 
             if (product.getUserId().equals(user.getId())) {
-                return HttpStatus.OK + " \n  not possible to unlike your own product!";
+                return HttpStatus.BAD_REQUEST + " \n  not possible to unlike your own product!";
             }
 
             Like like = likeMapper.findByUserIdAndProdId(user.getId(), product.getId());

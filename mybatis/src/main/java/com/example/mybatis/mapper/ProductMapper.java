@@ -10,7 +10,7 @@ public interface ProductMapper {
     @Select("select id,name,price,user_id as userId from products")
     List<Products> findAll(int pageable);
 
-    @Insert("insert into products(name,price, user_id) values(#{name}, #{price},#{userId})")
+    @Insert("insert into products(name,price, user_id, quantity) values(#{name}, #{price},#{userId}, #{quantity})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void save(Products products);
 
@@ -20,7 +20,7 @@ public interface ProductMapper {
     @Delete("delete  from products where id = #{id}")
     void deleteById(Long id);
 
-    @Select("update products set name=#{name}, price=#{price} where id = #{id}")
+    @Select("update products set name=#{name}, price=#{price}, quantity=#{quantity} where id = #{id}")
     void update(Products products);
 
     @Select("select name, price from products where id =#{id}")

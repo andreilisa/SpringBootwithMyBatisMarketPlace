@@ -45,12 +45,13 @@ public class ProductController {
             value = "create product ",
             authorizations = {
                     @Authorization(value = "Bearer")})
-    @PostMapping("/create-product")
+    @PostMapping("products")
     public Products create(@Valid @RequestBody ProductRequest productRequest) {
         Products products = new Products();
         products.setName(productRequest.getName());
         products.setPrice(productRequest.getPrice());
         products.setUserId(getCurrentUserId().getId());
+        products.setQuantity(productRequest.getQuantity());
         productMapper.save(products);
         elasticMapper.save(products);
         return products;
@@ -60,13 +61,14 @@ public class ProductController {
             value = "update product by id ",
             authorizations = {
                     @Authorization(value = "Bearer")})
-    @PutMapping("/update/{id}")
+    @PutMapping("products/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public String update(@Valid @RequestBody ProductRequest products1, @RequestParam Long id) throws Exception {
+    public String update(@Valid @RequestBody ProductRequest products1, @PathVariable Long id) throws Exception {
         Products products = productMapper.findById(id);
         if (getCurrentUserId().getId().equals(products.getUserId())) {
             products.setName(products1.getName());
             products.setPrice(products1.getPrice());
+            products.setQuantity(products1.getQuantity());
             productMapper.update(products);
             elasticMapper.save(products);
             return HttpStatus.OK + " \n Product Update with success";
@@ -78,7 +80,7 @@ public class ProductController {
             value = "delete product by id ",
             authorizations = {
                     @Authorization(value = "Bearer")})
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("products/{id}")
     public String delete(@PathVariable Long id) {
         Products products = productMapper.findById(id);
         if (getCurrentUserId().getId().equals(products.getUserId())) {
@@ -92,7 +94,7 @@ public class ProductController {
             value = "show product by id",
             authorizations = {
                     @Authorization(value = "Bearer")})
-    @GetMapping("/product-by-id")
+    @GetMapping("products/{id}")
     public Products product(@RequestParam Long id) {
         Products products = productMapper.findById(id);
         if (!getCurrentUserId().getId().equals(products.getUserId()))

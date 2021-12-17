@@ -21,5 +21,7 @@ public class Products {
     @JsonProperty(value = "user_id")
     private Long userId;
 
+    @Field(type = FieldType.Double, name = "quantity")
+    private Double quantity;
 
 }
