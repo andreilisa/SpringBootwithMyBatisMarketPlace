@@ -4,15 +4,24 @@ import com.example.mybatis.mapper.ProductMapper;
 import com.example.mybatis.model.Products;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.Query;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.print.Pageable;
-import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional(readOnly = true)
 public class ListOfAllProductsService {
+    @Autowired
+    ElasticsearchRestTemplate elasticsearchRestTemplate;
     @Autowired
     private ProductMapper productMapper;
 
@@ -21,5 +30,40 @@ public class ListOfAllProductsService {
         return productMapper.findByPage();
     }
 
+    public Object getProductsById(Long id, String name, Long userId) {
+        if (id == null && name == null && userId == null) {
+            return HttpStatus.BAD_REQUEST + " please put id of product or name with userId together";
+        }
+        if (id != null && name != null && userId != null) {
+            return HttpStatus.BAD_REQUEST + " you can only find product by id or name together with userId";
+        }
+        if (id !=null && name == null && userId != null){
+            return HttpStatus.BAD_REQUEST + " userId must be together only  with name";
+        }
+
+        if (id != null && name != null){
+            return HttpStatus.BAD_REQUEST + " name must be together only  with userId";
+        }
+        if (id != null) {
+            Query query = new NativeSearchQueryBuilder()
+                    .withQuery(QueryBuilders.matchQuery("id", id))
+                    .build();
+            SearchHits<Products> searchHits = elasticsearchRestTemplate.search(query, Products.class);
+
+            return searchHits.get().map(SearchHit::getContent).collect(Collectors.toList());
+
+        } else {
+            if (name != null && userId != null) {
+                Query query = new NativeSearchQueryBuilder()
+                        .withQuery(QueryBuilders.matchQuery("name", name))
+                        .withFilter(QueryBuilders.matchQuery("userId", userId))
+                        .build();
+                SearchHits<Products> searchHits = elasticsearchRestTemplate.search(query, Products.class);
+                return searchHits.get().map(SearchHit::getContent).collect(Collectors.toList());
+            }
+            else
+                return HttpStatus.BAD_REQUEST + " name must be together with userId";
+        }
+    }
 }
 

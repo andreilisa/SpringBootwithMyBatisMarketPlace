@@ -3,7 +3,12 @@ package com.example.mybatis.controller;
 import com.example.mybatis.model.Products;
 import com.example.mybatis.service.ListOfAllProductsService;
 import io.swagger.annotations.Api;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +21,7 @@ import javax.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Api
 @RestController
@@ -36,6 +42,11 @@ public class ListAllProductsController {
         List<Products> products = new ArrayList<>();
         iterator.forEachRemaining(products::add);
         return new  ResponseEntity<>(products, HttpStatus.OK);
+    }
+
+    @GetMapping("prod")
+    public Object getProducts(Long id,String name,Long userId) {
+        return listOfAllProductsService.getProductsById(id,name,userId);
     }
 }
 
