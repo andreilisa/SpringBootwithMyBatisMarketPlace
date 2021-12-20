@@ -12,11 +12,15 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.Query;
+import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -46,8 +50,9 @@ public class ProductController {
     @Autowired
     private ElasticMapper elasticMapper;
 
+
     @Autowired
-    ElasticsearchRestTemplate elasticsearchRestTemplate;
+    ElasticsearchOperations elasticsearchOperations;
 
     private static final String PRODUCT_INDEX = "product";
 
@@ -138,19 +143,4 @@ public class ProductController {
 
         return likeService.dislikeProduct(id);
     }
-
-    @ApiOperation(
-            value = "get product by name from elastic",
-            authorizations = {
-                    @Authorization(value = "Bearer")})
-
-    @GetMapping("")
-    public List<Products> getProductsByName(Long id) {
-            Query query = new NativeSearchQueryBuilder()
-                    .withQuery(QueryBuilders.matchQuery("id", id))
-                    .build();
-            SearchHits<Products> searchHits = elasticsearchRestTemplate.search(query, Products.class);
-
-            return searchHits.get().map(SearchHit::getContent).collect(Collectors.toList());
-        }
     }
