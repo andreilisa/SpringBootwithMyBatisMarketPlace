@@ -33,7 +33,7 @@ public class ListOfAllProductsService {
 
     public Object getProductsById(Long id, String name, Long userId) {
         if (id == null && name == null && userId == null) {
-           return exceptionAppend(" please put id of product or name with userId together");
+            return exceptionAppend(" please put id of product or name with userId together");
         }
         if (id != null && name != null && userId != null) {
             return exceptionAppend(" you can only find product by id or name together with userId");
@@ -63,8 +63,9 @@ public class ListOfAllProductsService {
             } else {
                 if (name != null) {
                     return exceptionAppend("name must be together with userId");
-                } else
+                } else {
                     return exceptionAppend("userId must be together with name");
+                }
             }
         }
     }
