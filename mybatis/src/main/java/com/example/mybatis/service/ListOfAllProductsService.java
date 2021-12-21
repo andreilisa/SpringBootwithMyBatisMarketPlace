@@ -11,11 +11,12 @@ import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.Query;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Collectors;
+
+import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 @Service
 @Transactional(readOnly = true)
@@ -32,17 +33,16 @@ public class ListOfAllProductsService {
 
     public Object getProductsById(Long id, String name, Long userId) {
         if (id == null && name == null && userId == null) {
-            return HttpStatus.BAD_REQUEST + " please put id of product or name with userId together";
+            throw new IllegalArgumentException(" please put id of product or name with userId together");
         }
         if (id != null && name != null && userId != null) {
-            return HttpStatus.BAD_REQUEST + " you can only find product by id or name together with userId";
+            throw new IllegalArgumentException(" you can only find product by id or name together with userId");
         }
-        if (id !=null && name == null && userId != null){
-            return HttpStatus.BAD_REQUEST + " userId must be together only  with name";
+        if (id != null && name == null && userId != null) {
+            throw new IllegalArgumentException("userId must be together only  with name");
         }
-
-        if (id != null && name != null){
-            return HttpStatus.BAD_REQUEST + " name must be together only  with userId";
+        if (id != null && name != null) {
+            throw new IllegalArgumentException("name must be together only  with userId");
         }
         if (id != null) {
             Query query = new NativeSearchQueryBuilder()
@@ -51,19 +51,17 @@ public class ListOfAllProductsService {
             SearchHits<Products> searchHits = elasticsearchRestTemplate.search(query, Products.class);
 
             return searchHits.get().map(SearchHit::getContent).collect(Collectors.toList());
-
         } else {
             if (name != null && userId != null) {
                 Query query = new NativeSearchQueryBuilder()
-                        .withQuery(QueryBuilders.matchQuery("name", name))
+                        .withQuery(QueryBuilders.matchQuery("name.keyword",name))
                         .withFilter(QueryBuilders.matchQuery("userId", userId))
                         .build();
                 SearchHits<Products> searchHits = elasticsearchRestTemplate.search(query, Products.class);
+
                 return searchHits.get().map(SearchHit::getContent).collect(Collectors.toList());
-            }
-            else
-                return HttpStatus.BAD_REQUEST + " name must be together with userId";
+            } else
+                throw new IllegalArgumentException("name must be together with userId");
         }
     }
 }
-

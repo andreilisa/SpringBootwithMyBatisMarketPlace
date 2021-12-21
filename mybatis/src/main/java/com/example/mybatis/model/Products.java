@@ -13,6 +13,7 @@ public class Products {
     @Id
     private Long id;
 
+    @Field(type = FieldType.Keyword, name = "name")
     private String name;
 
     @Field(type = FieldType.Double, name = "price")

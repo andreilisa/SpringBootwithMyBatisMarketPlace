@@ -36,7 +36,6 @@ public class ListAllProductsController {
     @GetMapping("")
     public ResponseEntity<List<Products>> getAllProducts(@RequestParam("page-number") @Min(0) int pageNumber,
                                                          @RequestParam("page-size") @Min(1) int pageSize) {
-
         List<Products> pageableProducts = listOfAllProductsService.findByPage(pageNumber, pageSize);
         Iterator<Products> iterator = pageableProducts.stream().iterator();
         List<Products> products = new ArrayList<>();
