@@ -40,7 +40,7 @@ public class ListOfAllProductsService {
             exceptionAppend("userId must be together only  with name");
         }
         if (id != null && name != null) {
-            exceptionAppend("name must be together only  with userId");
+            exceptionAppend("name must be together only with userId");
         }
         if (id != null) {
             Query query = new NativeSearchQueryBuilder()
@@ -58,8 +58,12 @@ public class ListOfAllProductsService {
                 SearchHits<Products> searchHits = elasticsearchRestTemplate.search(query, Products.class);
 
                 return searchHits.get().map(SearchHit::getContent).collect(Collectors.toList());
-            } else
-                return exceptionAppend("name must be together with userId");
+            } else {
+                if (name != null) {
+                    return exceptionAppend("name must be together with userId");
+                } else
+                    return exceptionAppend("userId must be together with name");
+            }
         }
     }
 
