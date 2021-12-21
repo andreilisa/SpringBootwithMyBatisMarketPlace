@@ -11,6 +11,8 @@ import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.Query;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,16 +33,16 @@ public class ListOfAllProductsService {
 
     public Object getProductsById(Long id, String name, Long userId) {
         if (id == null && name == null && userId == null) {
-            exceptionAppend(" please put id of product or name with userId together");
+           return exceptionAppend(" please put id of product or name with userId together");
         }
         if (id != null && name != null && userId != null) {
-            exceptionAppend(" you can only find product by id or name together with userId");
+            return exceptionAppend(" you can only find product by id or name together with userId");
         }
         if (id != null && name == null && userId != null) {
-            exceptionAppend("userId must be together only  with name");
+            return exceptionAppend("userId must be together only  with name");
         }
         if (id != null && name != null) {
-            exceptionAppend("name must be together only with userId");
+            return exceptionAppend("name must be together only with userId");
         }
         if (id != null) {
             Query query = new NativeSearchQueryBuilder()
@@ -68,6 +70,6 @@ public class ListOfAllProductsService {
     }
 
     public Object exceptionAppend(String message) {
-        throw new IllegalArgumentException(message);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
 }
