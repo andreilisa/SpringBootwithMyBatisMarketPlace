@@ -16,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Collectors;
 
-import static org.elasticsearch.index.query.QueryBuilders.termQuery;
-
 @Service
 @Transactional(readOnly = true)
 public class ListOfAllProductsService {
@@ -33,16 +31,16 @@ public class ListOfAllProductsService {
 
     public Object getProductsById(Long id, String name, Long userId) {
         if (id == null && name == null && userId == null) {
-            throw new IllegalArgumentException(" please put id of product or name with userId together");
+            exceptionAppend(" please put id of product or name with userId together");
         }
         if (id != null && name != null && userId != null) {
-            throw new IllegalArgumentException(" you can only find product by id or name together with userId");
+            exceptionAppend(" you can only find product by id or name together with userId");
         }
         if (id != null && name == null && userId != null) {
-            throw new IllegalArgumentException("userId must be together only  with name");
+            exceptionAppend("userId must be together only  with name");
         }
         if (id != null && name != null) {
-            throw new IllegalArgumentException("name must be together only  with userId");
+            exceptionAppend("name must be together only  with userId");
         }
         if (id != null) {
             Query query = new NativeSearchQueryBuilder()
@@ -54,14 +52,18 @@ public class ListOfAllProductsService {
         } else {
             if (name != null && userId != null) {
                 Query query = new NativeSearchQueryBuilder()
-                        .withQuery(QueryBuilders.matchQuery("name.keyword",name))
+                        .withQuery(QueryBuilders.matchQuery("name.keyword", name))
                         .withFilter(QueryBuilders.matchQuery("userId", userId))
                         .build();
                 SearchHits<Products> searchHits = elasticsearchRestTemplate.search(query, Products.class);
 
                 return searchHits.get().map(SearchHit::getContent).collect(Collectors.toList());
             } else
-                throw new IllegalArgumentException("name must be together with userId");
+                return exceptionAppend("name must be together with userId");
         }
+    }
+
+    public Object exceptionAppend(String message) {
+        throw new IllegalArgumentException(message);
     }
 }
