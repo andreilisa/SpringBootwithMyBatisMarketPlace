@@ -3,11 +3,8 @@ package com.example.mybatis.model;
 import lombok.Data;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.springframework.http.HttpStatus;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import javax.servlet.http.HttpServletResponse;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -18,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 
 @Data
-
 public class ProductsRequestElastic {
     @ElasticField(name = "id")
     protected Long id;

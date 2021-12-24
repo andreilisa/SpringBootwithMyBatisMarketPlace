@@ -6,12 +6,7 @@ import com.example.mybatis.model.ProductsRequestElastic;
 import com.example.mybatis.service.ListOfAllProductsService;
 import io.swagger.annotations.Api;
 import lombok.SneakyThrows;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.core.SearchHit;
-import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -24,7 +19,6 @@ import javax.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Api
 @RestController
@@ -32,8 +26,8 @@ import java.util.stream.Collectors;
 @Validated
 public class ListAllProductsController {
 
-   @Autowired
-   private ListOfAllProductsService listOfAllProductsService;
+    @Autowired
+    private ListOfAllProductsService listOfAllProductsService;
 
     @GetMapping("")
     public ResponseEntity<List<Products>> getAllProducts(@RequestParam("page-number") @Min(0) int pageNumber,
@@ -42,13 +36,13 @@ public class ListAllProductsController {
         Iterator<Products> iterator = pageableProducts.stream().iterator();
         List<Products> products = new ArrayList<>();
         iterator.forEachRemaining(products::add);
-        return new  ResponseEntity<>(products, HttpStatus.OK);
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @SneakyThrows
     @GetMapping("prod")
     public List<Products> getProducts(ProductsRequestElastic productsRequestElastic) {
-           return listOfAllProductsService.getProductsById(productsRequestElastic);
+        return listOfAllProductsService.getProductsById(productsRequestElastic);
     }
 }
 

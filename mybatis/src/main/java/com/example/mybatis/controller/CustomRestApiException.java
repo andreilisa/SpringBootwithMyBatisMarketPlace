@@ -1,5 +1,7 @@
 package com.example.mybatis.controller;
+
 import com.example.mybatis.model.ApiError;
+import com.example.mybatis.model.NoSuchElementFoundException;
 import com.example.mybatis.model.ProductNotFoundException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
@@ -11,8 +13,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import javax.validation.constraints.NotNull;
 
 
 @ControllerAdvice
@@ -33,6 +33,13 @@ public class CustomRestApiException extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(NoSuchElementFoundException.class)
+    public final ResponseEntity<Object> handleBadRequest(NoSuchElementFoundException ex, WebRequest request) {
+        ApiError exceptionResponse = new ApiError(ex.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+
     @Override
 
     protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers,
@@ -44,7 +51,7 @@ public class CustomRestApiException extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers, HttpStatus status, WebRequest request){
+                                                                  HttpHeaders headers, HttpStatus status, WebRequest request) {
         ApiError exceptionResponse = new ApiError("CONFLICT",
                 ex.getBindingResult().toString());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.CONFLICT);
