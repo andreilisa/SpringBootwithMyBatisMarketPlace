@@ -1,8 +1,11 @@
 package com.example.mybatis.controller;
 
+
 import com.example.mybatis.model.Products;
+import com.example.mybatis.model.ProductsRequestElastic;
 import com.example.mybatis.service.ListOfAllProductsService;
 import io.swagger.annotations.Api;
+import lombok.SneakyThrows;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -28,10 +31,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/list-all-products")
 @Validated
 public class ListAllProductsController {
+
    @Autowired
    private ListOfAllProductsService listOfAllProductsService;
-
-
 
     @GetMapping("")
     public ResponseEntity<List<Products>> getAllProducts(@RequestParam("page-number") @Min(0) int pageNumber,
@@ -43,9 +45,10 @@ public class ListAllProductsController {
         return new  ResponseEntity<>(products, HttpStatus.OK);
     }
 
+    @SneakyThrows
     @GetMapping("prod")
-    public Object getProducts(Long id,String name,Long userId) {
-        return listOfAllProductsService.getProductsById(id,name,userId);
+    public List<Products> getProducts(ProductsRequestElastic productsRequestElastic) {
+           return listOfAllProductsService.getProductsById(productsRequestElastic);
     }
 }
 
