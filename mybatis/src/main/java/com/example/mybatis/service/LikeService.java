@@ -12,8 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 public class LikeService {
 
@@ -37,7 +35,7 @@ public class LikeService {
         if (product != null) {
 
             if (product.getUserId().equals(user.getId())) {
-                throw  new BadRequestException(" \n  not possible to like your own product!");
+                throw new BadRequestException(" \n  not possible to like your own product!");
             }
 
             Like like = likeMapper.findByUserIdAndProdId(user.getId(), product.getId());
@@ -54,7 +52,7 @@ public class LikeService {
             }
             return (HttpStatus.OK) + "\n product liked";
         } else {
-            throw  new ProductNotFoundException("Product not found");
+            throw new ProductNotFoundException("Product not found");
         }
     }
 
@@ -67,7 +65,7 @@ public class LikeService {
         if (product != null) {
 
             if (product.getUserId().equals(user.getId())) {
-                throw  new BadRequestException(" \n  not possible to unlike your own product!");
+                throw new BadRequestException(" \n  not possible to unlike your own product!");
             }
 
             Like like = likeMapper.findByUserIdAndProdId(user.getId(), product.getId());
@@ -84,7 +82,7 @@ public class LikeService {
             }
             return (HttpStatus.OK) + "\n product unliked";
         } else {
-            throw  new ProductNotFoundException("Product not found");
+            throw new ProductNotFoundException("Product not found");
         }
     }
 }

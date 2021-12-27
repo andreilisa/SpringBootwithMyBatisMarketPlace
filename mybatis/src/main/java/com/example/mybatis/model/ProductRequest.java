@@ -9,5 +9,5 @@ public class ProductRequest {
     private String name;
     @NotNull(message = "Price by product not be 0 or negative number")
     private double price;
-     private double quantity;
+    private double quantity;
 }

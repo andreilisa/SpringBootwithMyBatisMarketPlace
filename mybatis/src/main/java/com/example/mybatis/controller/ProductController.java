@@ -91,7 +91,7 @@ public class ProductController {
             productMapper.deleteById(id);
             return (HttpStatus.OK) + "\n Object deleted";
         } else
-             throw new ProductNotFoundException("Product not found");
+            throw new ProductNotFoundException("Product not found");
     }
 
     @ApiOperation(

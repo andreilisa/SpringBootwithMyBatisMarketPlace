@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,11 +21,11 @@ public class User implements UserDetails {
     private String password;
     private String email;
     private UserRole userRole;
-    private boolean locked ;
+    private boolean locked;
     private boolean enabled = true;
     private List<Products> products;
 
-        public User(String username,
+    public User(String username,
                 String password,
                 String email,
                 UserRole user) {

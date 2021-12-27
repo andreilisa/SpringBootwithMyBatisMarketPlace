@@ -5,7 +5,6 @@ import com.example.mybatis.model.RegisterRequest;
 import com.example.mybatis.model.User;
 import com.example.mybatis.model.UserRole;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -34,14 +33,14 @@ public class UserService implements UserDetailsService {
 
     public String signUp(User user) {
 
-        User users =  userMapper.findByUsername(user.getUsername());
+        User users = userMapper.findByUsername(user.getUsername());
         if (users != null)
-            throw  new UsernameNotFoundException(String.format("User with %s already exists", users.getUsername()));
+            throw new UsernameNotFoundException(String.format("User with %s already exists", users.getUsername()));
         String encodePass = bCryptPasswordEncoder
                 .encode(user.getPassword());
         user.setPassword(encodePass);
         userMapper.save(user);
-        return  HttpStatus.OK + " \nRegister with success";
+        return HttpStatus.OK + " \nRegister with success";
     }
 
     public String register(RegisterRequest request) {

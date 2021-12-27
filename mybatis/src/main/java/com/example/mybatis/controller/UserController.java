@@ -32,7 +32,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public String register( @RequestBody @Valid RegisterRequest request) {
+    public String register(@RequestBody @Valid RegisterRequest request) {
         return userService.register(request);
 
     }
