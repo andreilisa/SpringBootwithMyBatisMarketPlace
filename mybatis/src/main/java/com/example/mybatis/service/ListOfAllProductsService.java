@@ -1,7 +1,6 @@
 package com.example.mybatis.service;
 
 import com.example.mybatis.mapper.ProductMapper;
-import com.example.mybatis.model.NoSuchElementFoundException;
 import com.example.mybatis.model.Products;
 import com.example.mybatis.model.ProductsRequestElastic;
 import com.github.pagehelper.Page;

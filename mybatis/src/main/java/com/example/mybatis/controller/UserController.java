@@ -1,5 +1,6 @@
 package com.example.mybatis.controller;
 
+import com.example.mybatis.model.BadRequestException;
 import com.example.mybatis.model.LoginRequest;
 import com.example.mybatis.model.RegisterRequest;
 import com.example.mybatis.service.UserService;
@@ -37,13 +38,13 @@ public class UserController {
     }
 
     @PostMapping("/authenticate")
-    public String generateToken(@RequestBody @Valid LoginRequest authRequest) throws Exception {
+    public String generateToken(@RequestBody @Valid LoginRequest authRequest) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
             );
         } catch (Exception ex) {
-            throw new Exception("Invalid username or password");
+            throw new BadRequestException("Invalid username or password");
         }
         return jwtUtil.generateToken(authRequest.getUsername());
     }

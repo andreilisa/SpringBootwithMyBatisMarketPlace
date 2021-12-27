@@ -40,7 +40,7 @@ public class ProductsRequestElastic {
         }
 
         if (fieldsNotNull.isEmpty()) {
-            throw new NoSuchElementFoundException("All fields is null");
+            throw new BadRequestException("All fields is null");
         }
 
         List<String[]> groups = getGroup();
@@ -49,7 +49,7 @@ public class ProductsRequestElastic {
                 return bool;
         }
 
-        throw new NoSuchElementFoundException(String.format("Not permit group, group available %s", Arrays.toString(groups.toArray())));
+        throw new BadRequestException(String.format("Not permit group, group available %s", Arrays.toString(groups.toArray())));
     }
 
     private List<String[]> getGroup() {

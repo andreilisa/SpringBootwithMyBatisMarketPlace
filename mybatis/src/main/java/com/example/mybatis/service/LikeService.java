@@ -4,9 +4,7 @@ package com.example.mybatis.service;
 import com.example.mybatis.mapper.LikeMapper;
 import com.example.mybatis.mapper.ProductMapper;
 import com.example.mybatis.mapper.UserMapper;
-import com.example.mybatis.model.Like;
-import com.example.mybatis.model.Products;
-import com.example.mybatis.model.User;
+import com.example.mybatis.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -39,7 +37,7 @@ public class LikeService {
         if (product != null) {
 
             if (product.getUserId().equals(user.getId())) {
-                return HttpStatus.BAD_REQUEST + " \n  not possible to like your own product!";
+                throw  new BadRequestException(" \n  not possible to like your own product!");
             }
 
             Like like = likeMapper.findByUserIdAndProdId(user.getId(), product.getId());
@@ -56,7 +54,7 @@ public class LikeService {
             }
             return (HttpStatus.OK) + "\n product liked";
         } else {
-            return String.valueOf(HttpStatus.NOT_FOUND);
+            throw  new ProductNotFoundException("Product not found");
         }
     }
 
@@ -69,7 +67,7 @@ public class LikeService {
         if (product != null) {
 
             if (product.getUserId().equals(user.getId())) {
-                return HttpStatus.BAD_REQUEST + " \n  not possible to unlike your own product!";
+                throw  new BadRequestException(" \n  not possible to unlike your own product!");
             }
 
             Like like = likeMapper.findByUserIdAndProdId(user.getId(), product.getId());
@@ -86,7 +84,7 @@ public class LikeService {
             }
             return (HttpStatus.OK) + "\n product unliked";
         } else {
-            return String.valueOf(HttpStatus.NOT_FOUND);
+            throw  new ProductNotFoundException("Product not found");
         }
     }
 }

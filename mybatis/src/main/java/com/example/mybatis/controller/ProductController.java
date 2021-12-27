@@ -3,6 +3,7 @@ package com.example.mybatis.controller;
 import com.example.mybatis.mapper.ElasticMapper;
 import com.example.mybatis.mapper.ProductMapper;
 import com.example.mybatis.mapper.UserMapper;
+import com.example.mybatis.model.ProductNotFoundException;
 import com.example.mybatis.model.ProductRequest;
 import com.example.mybatis.model.Products;
 import com.example.mybatis.model.User;
@@ -75,7 +76,7 @@ public class ProductController {
             productMapper.update(products);
             elasticMapper.save(products);
             return HttpStatus.OK + " \n Product Update with success";
-        } else throw new Exception(HttpStatus.NOT_FOUND + " No value present");
+        } else throw new ProductNotFoundException("No value present");
     }
 
 
@@ -90,7 +91,7 @@ public class ProductController {
             productMapper.deleteById(id);
             return (HttpStatus.OK) + "\n Object deleted";
         } else
-            return (HttpStatus.NOT_FOUND + "\n Product not found");
+             throw new ProductNotFoundException("Product not found");
     }
 
     @ApiOperation(
