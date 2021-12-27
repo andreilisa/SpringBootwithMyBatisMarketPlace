@@ -17,12 +17,14 @@ public class LikeService {
 
     @Autowired
     LikeMapper likeMapper;
+
     @Autowired
     private ProductMapper productMapper;
+
     @Autowired
     private UserMapper userMapper;
 
-    public com.example.mybatis.model.User getCurrentUserId() {
+    public User getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return userMapper.findByUsername(authentication.getName());
     }
