@@ -1,6 +1,7 @@
 package com.example.mybatis.service;
 
 import com.example.mybatis.mapper.UserMapper;
+import com.example.mybatis.model.BadRequestException;
 import com.example.mybatis.model.RegisterRequest;
 import com.example.mybatis.model.User;
 import com.example.mybatis.model.UserRole;
@@ -35,7 +36,7 @@ public class UserService implements UserDetailsService {
 
         User users = userMapper.findByUsername(user.getUsername());
         if (users != null)
-            throw new UsernameNotFoundException(String.format("User with %s already exists", users.getUsername()));
+            throw new BadRequestException(String.format("User with (%s) username already exists", users.getUsername()));
         String encodePass = bCryptPasswordEncoder
                 .encode(user.getPassword());
         user.setPassword(encodePass);
