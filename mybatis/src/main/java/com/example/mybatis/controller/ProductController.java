@@ -67,7 +67,7 @@ public class ProductController {
                     @Authorization(value = "Bearer")})
     @PutMapping("products{id}")
     @ResponseStatus(HttpStatus.OK)
-    public String update(@Valid @RequestBody ProductRequest products1, @PathVariable Long id) throws Exception {
+    public String update(@Valid @RequestBody ProductRequest products1, @PathVariable Long id) {
         Products products = productMapper.findById(id);
         if (getCurrentUserId().getId().equals(products.getUserId())) {
             products.setName(products1.getName());
@@ -99,7 +99,7 @@ public class ProductController {
             authorizations = {
                     @Authorization(value = "Bearer")})
     @GetMapping("products{id}")
-    public Products product(@RequestParam Long id) {
+    public Products product(@PathVariable Long id) {
         Products products = productMapper.findById(id);
         if (!getCurrentUserId().getId().equals(products.getUserId()))
             productMapper.show(id);
