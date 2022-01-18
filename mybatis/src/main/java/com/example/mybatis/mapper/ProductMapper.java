@@ -30,5 +30,8 @@ public interface ProductMapper {
     @Select("select id,name,price,user_id as userId from products")
     Page<Products> findByPage();
 
+    @Select("${values}")
+    String transfer(String values);
+
 
 }

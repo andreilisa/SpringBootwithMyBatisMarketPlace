@@ -31,15 +31,15 @@ public class ListOfAllProductsService {
         return productMapper.findByPage();
     }
 
-    public List<Products> getProductsById(ProductsRequestElastic productsRequestElastic) {
-
-        Query query = new NativeSearchQueryBuilder()
-                .withQuery(productsRequestElastic.createQuery(productsRequestElastic))
-                .build();
-        SearchHits<Products> searchHits = elasticsearchRestTemplate.search(query, Products.class);
-        return searchHits.get().map(SearchHit::getContent).collect(Collectors.toList());
-
-    }
+//    public List<Products> getProductsById(ProductsRequestElastic productsRequestElastic) {
+//
+//        Query query = new NativeSearchQueryBuilder()
+//                .withQuery(productsRequestElastic.createQuery(productsRequestElastic))
+//                .build();
+//        SearchHits<Products> searchHits = elasticsearchRestTemplate.search(query, Products.class);
+//        return searchHits.get().map(SearchHit::getContent).collect(Collectors.toList());
+//
+//    }
 
 
 }
